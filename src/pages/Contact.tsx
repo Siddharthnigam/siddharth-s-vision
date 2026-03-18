@@ -44,20 +44,17 @@ const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     message: formData.get("message") as string,
   };
 
-  // ✅ EmailJS integration
   emailjs
     .send(
-        "service_l84929o",       // Service ID
-        "template_j2nets1",      // ✅ Your Template ID
+      import.meta.env.VITE_EMAILJS_SERVICE_ID,
+      import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
       data,
-        "KdgWAQIC2r5tIBJzk"      // Public Key
-      )
-
+      import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+    )
     .then(() => {
       setSubmitted(true);
     })
-    .catch((error) => {
-      console.error("EmailJS error:", error);
+    .catch(() => {
       alert("Failed to send message. Please try again.");
     });
 };
