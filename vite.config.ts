@@ -16,10 +16,10 @@ export default defineConfig(({ mode }) => ({
     sourcemap: mode === "development",
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ["react", "react-dom", "react-router-dom"],
-          motion: ["framer-motion"],
-          ui: ["@radix-ui/react-dialog", "@radix-ui/react-tooltip", "@radix-ui/react-dropdown-menu"],
+        manualChunks(id) {
+          if (id.includes("framer-motion")) return "motion";
+          if (id.includes("@radix-ui")) return "ui";
+          if (id.includes("node_modules")) return "vendor";
         },
       },
     },
