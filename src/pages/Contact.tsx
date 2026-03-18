@@ -6,6 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import AnimationWrapper from "@/components/AnimationWrapper";
 import SEO from "@/components/SEO";
 import { motion, AnimatePresence } from "framer-motion";
+import emailjs from "@emailjs/browser";
+
 
 const Contact = () => {
   const [submitted, setSubmitted] = useState(false);
@@ -22,17 +24,44 @@ const Contact = () => {
     return errs;
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const errs = validate(formData);
-    if (Object.keys(errs).length > 0) {
-      setErrors(errs);
-      return;
-    }
-    setErrors({});
-    setSubmitted(true);
+
+const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  const formData = new FormData(e.currentTarget);
+  const errs = validate(formData);
+
+  if (Object.keys(errs).length > 0) {
+    setErrors(errs);
+    return;
+  }
+
+  setErrors({});
+
+  // Convert FormData to plain object
+  const data = {
+    name: formData.get("name") as string,
+    email: formData.get("email") as string,
+    message: formData.get("message") as string,
   };
+
+  // ✅ EmailJS integration
+  emailjs
+    .send(
+        "service_l84929o",       // Service ID
+        "template_j2nets1",      // ✅ Your Template ID
+      data,
+        "KdgWAQIC2r5tIBJzk"      // Public Key
+      )
+
+    .then(() => {
+      setSubmitted(true);
+    })
+    .catch((error) => {
+      console.error("EmailJS error:", error);
+      alert("Failed to send message. Please try again.");
+    });
+};
+
 
   const socials = [
     { icon: Github, href: "https://github.com/Siddharthnigam", label: "GitHub" },
